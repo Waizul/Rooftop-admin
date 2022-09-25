@@ -5,15 +5,32 @@ import { Container } from "./datatableStyle";
 import { userRows, userColumns } from "../../datatablesource";
 import { StyledLink } from "../../globalStyles";
 import useDarkMode from "../../hooks/useDarkMode";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useFetch from "../../hooks/useFetch";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const Datatable = () => {
-	const [data, setData] = useState(userRows)
+	const location = useLocation();
+	const path = location.pathname.split("/")[1];
+
+	const [list, setList] = useState([]);
 	const { darkMode } = useDarkMode();
-    
-	const deleteFunction = id => {
-		setData(data.filter(item => item.id !== id))
-	}
+	const { data, loading, error } = useFetch(
+		"http://localhost:8800/api/v1/users"
+	);
+	// console.log(data, error)
+	useEffect(() => {
+		setList(data);
+	}, [data]);
+
+	const handleDelete = async (id) => {
+		try {
+			const res = await axios.delete(`http://localhost:8800/api/v1/${path}/${id}`);
+			window.alert(res.data)
+			setList(list.filter((item) => item._id !== id));
+		} catch (err) {}
+	};
 
 	const actionColumn = [
 		{
@@ -30,7 +47,7 @@ const Datatable = () => {
 						</StyledLink>
 						<div
 							className={darkMode ? "deleteButton dark" : "deleteButton"}
-							onClick={() => deleteFunction(params.row.id)}
+							onClick={() => handleDelete(params.row._id)}
 						>
 							Delete
 						</div>
@@ -51,11 +68,12 @@ const Datatable = () => {
 
 			<DataGrid
 				style={{ color: darkMode && "gray", border: darkMode && "none" }}
-				rows={data}
+				rows={list}
 				columns={userColumns.concat(actionColumn)}
 				pageSize={9}
 				rowsPerPageOptions={[9]}
 				checkboxSelection
+				getRowId={(row) => row._id}
 			/>
 		</Container>
 	);

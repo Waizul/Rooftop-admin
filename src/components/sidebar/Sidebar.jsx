@@ -36,8 +36,8 @@ const dashboard_list = [
 		icon: <PersonOutlineIcon />,
 	},
 	{
-		listItem: "Products",
-		link: "/products",
+		listItem: "Properties",
+		link: "/properties",
 		icon: <StoreIcon />,
 	},
 	{
@@ -98,7 +98,7 @@ const Sidebar = () => {
 		<Container darkMode={darkMode}>
 			<Top>
 				<StyledLink to='/'>
-					<Logo darkMode={darkMode}>Lamadev</Logo>
+					<Logo darkMode={darkMode}>Rooftop.com</Logo>
 				</StyledLink>
 			</Top>
 			<Hr darkMode={darkMode} />
